@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import AvatarEditor from 'react-avatar-editor';
+import AvatarEditor from 'react-avatar-editor';
 import Modal from '../TailwindCss/Modal';
 import instance from '../../app/api';
 import { toast } from 'react-toastify';
@@ -89,7 +89,7 @@ function ProfilePictureUploader({
         </div>
       {image && (
         <div>
-            {/* <center>
+            <center>
                 <AvatarEditor
                     ref={(ref) => setEditor(ref)}
                     image={image}
@@ -99,7 +99,7 @@ function ProfilePictureUploader({
                     color={[255, 255, 255, 0.6]} // Background color
                     scale={scale}
                 />
-            </center> */}
+            </center>
           <input
                 type="range"
                 min="1"
