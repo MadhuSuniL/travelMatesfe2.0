@@ -35,7 +35,7 @@ async function refreshToken() {
 
 function AuthWrapper(WrappedComponent) {
   const HOC = (props) => {
-    return <WrappedComponent {...props} />;
+    // return <WrappedComponent {...props} />;
     const storedAccessToken = localStorage.getItem('accessToken');
     if (!storedAccessToken) {
       return <Navigate to="/login" replace={true} />;
