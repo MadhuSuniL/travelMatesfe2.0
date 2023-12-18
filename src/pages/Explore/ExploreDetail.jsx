@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import TripCard from '../../components/explore/TripCard'
-import Header from '../../Header'
 import { useParams } from 'react-router-dom'
 import Loading from '../../components/global/Loading'
 import instance from '../../app/api'
+import {toast} from 'react-toastify'
 
 
 const ExploreD = () => {
@@ -13,12 +13,23 @@ const ExploreD = () => {
     const [loading,setLoading] = useState(false)
 
     const getPlaces = () => {
+        setLoading(true)
       let url = `explore/sample_trips/${category}`
       instance.get(url)
       .then(response => response.data)
       .then(data => {
         setPlaces(data)
+        setLoading(false)
       })
+      .catch(error => {
+        try {
+            toast.warning(error.response.data.detial)
+            setLoading(false)
+        } catch (error) {
+            toast.error('Internal error: ')                
+            setLoading(false)
+        }
+    })  
     }
     
     useEffect(() => {

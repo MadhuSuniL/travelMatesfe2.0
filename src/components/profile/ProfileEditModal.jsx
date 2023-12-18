@@ -3,13 +3,14 @@ import Select from 'react-select';
 import Modal from '../TailwindCss/Modal';
 import instance from '../../app/api';
 import { toast } from 'react-toastify';
+import Loading from '../../components/global/Loading'
 
 function ProfileEditModal({
     showProfileEditModal,
     setShowProfileEditModal,
     refreshProfile,
     setRefreshProfile,
-    travelMateId
+    travelMateId,
 }) {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -18,6 +19,7 @@ function ProfileEditModal({
     const [bio, setBio] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [motherTongue, setMotherTongue] = useState('');
+    const [isLoading,setIsLoading] = useState(false)
 
     const mother_tongues = [
       "English",
@@ -88,6 +90,7 @@ function ProfileEditModal({
   
 
     const handleSave = () => {
+        setIsLoading(true)
         let url = `/travel-mates/update/${travelMateId}`
         let body = {
           first_name: firstName,
@@ -107,7 +110,17 @@ function ProfileEditModal({
           setRefreshProfile(!refreshProfile)
           toast.info('Profile updated successfully')
           setShowProfileEditModal(false)
+          setIsLoading(false)
         })
+        .catch(error => {
+            try {
+                toast.warning(error.response.data.detial)
+                setIsLoading(false)
+            } catch (error) {
+                toast.error('Internal error: ')                
+                setIsLoading(false)
+            }
+        })    
     };
 
     const updateProfileData = (data)=>{
@@ -121,12 +134,23 @@ function ProfileEditModal({
     }
 
     const getProfileData = () => {
+        setIsLoading(true)
       let url = `/travel-mates/travel_mate/${travelMateId}`
       instance.get(url)
       .then(response => response.data)
       .then(data => {
         updateProfileData(data)
+        setIsLoading(false)
   })
+  .catch(error => {
+    try {
+        toast.warning(error.response.data.detial)
+        setIsLoading(false)
+    } catch (error) {
+        toast.error('Internal error: ')                
+        setIsLoading(false)
+    }
+})    
     }
 
 
@@ -140,6 +164,7 @@ function ProfileEditModal({
             onClose={() => setShowProfileEditModal(false)}
             title="Edit Profile"
         >
+        {isLoading && <Loading/>}
             <div className="p-4 pt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                     <div>

@@ -10,7 +10,7 @@ import Follow from '../trips/Follow'
 import Comment from '../trips/Comment'
 import Request from '../trips/Request'
 import instance from '../../app/api'
-import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const Trip = ({
   setShowCommentModal,
@@ -20,7 +20,10 @@ const Trip = ({
   onClick
 }) => {
 
+      const nav = useNavigate()
       const [tripId, setTripId] = useState('')
+      const [travelerId, setTravelerId] = useState('')
+      const [travelerProfile, setTravelerProfile] = useState('')
       const [title, setTitle] = useState('')
       const [travlerName, setTravlerName] = useState('')
       const [from, setFrom] = useState('')
@@ -40,7 +43,9 @@ const Trip = ({
     const updateSates = (tripData) =>{
       setTripId(tripData.trip_id)
       setTitle(tripData.title)
+      setTravelerId(tripData.travel_mate)
       setTravlerName(tripData.travel_mate_name)
+      setTravelerProfile(tripData.travel_mate_profile)
       setFrom(tripData.departure)
       setTo(tripData.destination)
       setDate(tripData.trip_date)
@@ -88,6 +93,14 @@ const Trip = ({
     })
   }
 
+  const addFullUrlToImg = (url) => {
+    const baseUrl = process.env.REACT_APP_API_URL || "";
+    if (!url.includes("https://")) {
+      return baseUrl + url
+    }
+    return url
+  };
+
   useEffect(()=>{
       updateSates(tripData)
   },[tripData])
@@ -101,7 +114,10 @@ const Trip = ({
             </div>
             <img src={''} className='w-10 rounded-full m-3 mb-0'/>
         </div>
-       <h1 className='m-3 mt-0 text-md  font-semibold text-left  flex'><span><img src={user} className='mr-1 mt-[13%] w-4'/></span>{travlerName}</h1> 
+        <div onClick={()=> nav(`/profile/${travelerId}`)} className='flex cursor-pointer justify-between items-center'>
+            <h1 className='m-3 mt-0 text-md  font-semibold text-left  flex'><span><img src={user} className='mr-1 mt-[13%] w-4'/></span>{travlerName}</h1> 
+            <img src={addFullUrlToImg(travelerProfile)} className='w-10 mx-2 rounded-full'/>
+        </div>
         <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={connect} className='mr-1 mt-[13%] w-4'/></span>{connectedCount}/{strength}</h1>
         <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={usb} className='mr-1 mt-[13%] w-4'/></span> {category}</h1>
         <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={timer} className='mr-1 mt-[13%] w-4'/></span> {date}</h1>

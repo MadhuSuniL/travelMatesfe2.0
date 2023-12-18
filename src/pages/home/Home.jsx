@@ -13,7 +13,7 @@ const Home = () => {
     const nav = useNavigate()
     const [refreshTripData, setRefreshTripData] = useState(false)
     const [tripData,setTripData] = useState([])
-    const [loading,setLoading] = useState(false)
+    const [isLoading,setIsLoading] = useState(false)
     const [currentTripId,setCurrentTripId] = useState('')
     const [currentTripName,setCurrentTripName] = useState('')
     const [showCommentModal,setShowCommentModal] = useState(false)
@@ -53,22 +53,41 @@ const Home = () => {
     }
 
     const getFilterBackendData = () =>{
+        setIsLoading(true)
         let url = 'trips/filter_data_keys'
         instance.get(url)
         .then(response => response.data)
-        .then(data => setFiltersBackendData(data))
-    }
-
-    const getTripData = () => {
-        let url = `trips/${queryString}`
-        instance.get(url)
-        .then(response => response.data)
-        .then(data => setTripData(data))
+        .then(data => {
+            setFiltersBackendData(data)
+            setIsLoading(false)
+        })
         .catch(error => {
             try {
                 toast.warning(error.response.data.detial)
+                setIsLoading(false)
             } catch (error) {
-                // toast.error('Internal error: ' + error)                
+                toast.error('Internal error: ')                
+                setIsLoading(false)
+            }
+        })    
+    }
+
+    const getTripData = () => {
+        setIsLoading(true)
+        let url = `trips/${queryString}`
+        instance.get(url)
+        .then(response => response.data)
+        .then(data => {
+            setTripData(data)
+            setIsLoading(false)
+        })
+        .catch(error => {
+            try {
+                toast.warning(error.response.data.detial)
+                setIsLoading(false)
+            } catch (error) {
+                toast.error('Internal error: ')                
+                setIsLoading(false)
             }
         })    
     }
@@ -81,7 +100,7 @@ const Home = () => {
 
     return (
     <div className=''>
-        {/* <Header tra={true}/> */}
+        {isLoading && <Loading/>}
         <div className='grid md:grid-cols-3 gap-2 max-w-[1030px] p-1 mx-auto border-0 border-black'>
         {/* filter */}
         <div className='hidden md:block p-0 m-3 mt-0'>
@@ -221,19 +240,25 @@ const Home = () => {
         <img src={explore} className='w-20'/>
         <p className='p-1 text-center text-yellow-0 text-sm'>"Discover our collection of visited places across different countries! From stunning beaches to breathtaking mountains, we've got it all. Explore our curated list and get inspired for your next adventure."</p>
         </div>
-        <button onClick={()=>nav('/explore')} className='border-2 p-3 m-1 float-right py-1 text-white font-semibold rounded-md bg-yellow-400 border-yellow-400'>Explore</button>
+        <button onClick={()=>nav('/explore')} className='border-2 p-3 m-1 float-right py-1 text-white font-semibold rounded-md bg-yellow-400 border-yellow-400 animate-pulse'>Explore</button>
         </div>
                                 {/* {Trips} */}
         
         {
-            tripData.map(trip => <Trip
+            tripData.map(trip => 
+            trip.strength >= trip?.connected_travel_mates?.length ?
+            <Trip
                 onClick = {()=>nav(`/trip/${trip.trip_id}`)}
                 key={trip.trip_id}
                 setShowCommentModal = {setShowCommentModal} 
                 setCurrentTripId = {setCurrentTripId}
                 setCurrentTripName = {setCurrentTripName}
                 tripData = {trip}                
-                />)
+                />
+            :
+            ''
+            )
+
         }
             {
                 tripData.length > 1 ?

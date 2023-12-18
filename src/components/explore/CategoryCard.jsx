@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import instance from '../../app/api'
 import Loading from '../global/Loading'
 
 

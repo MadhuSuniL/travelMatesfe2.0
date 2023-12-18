@@ -56,7 +56,7 @@ function ProfilePictureUploader({
             }
           })
           .then((response) => {
-            toast.info('Image uploaded successfully')
+            toast.info('Image changed successfully')
             setShowChangeProfilePicModal(false)
             setRefreshProfile(!refreshProfile)
           })        

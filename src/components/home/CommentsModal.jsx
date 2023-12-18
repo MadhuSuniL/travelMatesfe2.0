@@ -21,6 +21,13 @@ const CommentsModal = ({
         instance.get(url)
         .then(response => response.data)
         .then(data => setCommentsData(data))
+        .catch(error => {
+            try {
+                toast.warning(error.response.data.detial)
+            } catch (error) {
+                toast.error('Internal error: ')                
+            }
+        })  
     }
 
     const addComment = () =>{
@@ -33,10 +40,16 @@ const CommentsModal = ({
         .then(response => response.data)
         .then(data => {
             getCommentsData()
-            toast.info('Comment added successfully')
             setComment('')
             setRefreshTripData(!refreshTripData)
         })
+        .catch(error => {
+            try {
+                toast.warning(error.response.data.detial)
+            } catch (error) {
+                toast.error('Internal error: ')                
+            }
+        })  
 
     }
 

@@ -39,7 +39,7 @@ const Trip = ({
       setTravlerName(tripData.travel_mate_name)
       setFrom(tripData.departure)
       setTo(tripData.destination)
-      setDate(tripData.date)
+      setDate(tripData.trip_date)
       setCategory(tripData.category)
       setLikeCount(tripData.likes.length)
       setIsLiked(tripData.is_liked)
@@ -48,7 +48,6 @@ const Trip = ({
       setRequestsCount(tripData.requests.length)
       setConnectedCount(tripData.connected_travel_mates.length)
   }
-
 
   const refreshTripData = () => {
     let url = `trips/${tripId}`
@@ -87,7 +86,7 @@ const Trip = ({
        <h1 className='m-3 mt-0 text-md  font-semibold text-left  flex'><span><img src={user} className='mr-1 mt-[13%] w-4'/></span>{travlerName}</h1> 
         <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={connect} className='mr-1 mt-[13%] w-4'/></span>{connectedCount}/{strength}</h1>
         <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={usb} className='mr-1 mt-[13%] w-4'/></span> {category}</h1>
-        <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={timer} className='mr-1 mt-[13%] w-4'/></span> {'10 days to go'}</h1>
+        <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={timer} className='mr-1 mt-[13%] w-4'/></span> {date}</h1>
         {/* <br/> */}
         <div className='flex justify-around  mt-5'>
             <center>

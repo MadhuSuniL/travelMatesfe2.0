@@ -1,10 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import Header from '../../Header'
 import Loading from '../../components/global/Loading.jsx'
 import ViewProfileModal from '../../components/profile/ProfileView.jsx'
 import ProfileEditModal from '../../components/profile/ProfileEditModal'
-import { FaCog,FaPen,FaSignOutAlt } from 'react-icons/fa';
+import { FaCog,FaPen } from 'react-icons/fa';
 import instance from '../../app/api.jsx'
 import FollowersModal from '../../components/profile/Followers.jsx'
 import FollowingsModal from '../../components/profile/Followings.jsx'
@@ -12,6 +11,7 @@ import ProfilePictureUploader from '../../components/profile/ProfilePicChange.js
 import DefaultPic from '../../assests/default_user.png'
 import TripTabs from '../../components/profile/trips/TripTabs.jsx'
 import explore from '../../assests/travel.png'
+import {toast} from 'react-toastify'
 
 
 
@@ -27,6 +27,7 @@ const Profile = () => {
     const [showFollowingsModal,setShowFollowingsModal] = useState(false) 
     // const [showSettingsModal,setShowSettingsModal] = useState(false)
     const [selfProfile, setSelfProfile] = useState(false)
+    const [isFollowing, setIsFollowing] = useState(false)
     const [refreshProfile, setRefreshProfile] = useState(false)
     const [isLoading , setIsLoading] = useState(false)
 
@@ -41,6 +42,7 @@ const Profile = () => {
     const [followings, setFollowings] = useState(0)
 
     const getTravelMateData = ()=>{
+        setIsLoading(true)
         let url = ''
         if (travel_mate_id === 'self'){
             setSelfProfile(true)
@@ -60,13 +62,45 @@ const Profile = () => {
             setBio(data.bio)
             setProfilePicture(data.profile_pic)
             setTrips(data.trips)
+            setIsFollowing(data.is_following)
             setFollowers(data.followers)
             setFollowings(data.followings)
+            setIsLoading(false)
         })
+        .catch(error => {
+            try {
+                toast.warning(error.response.data.detial)
+                setIsLoading(false)
+            } catch (error) {
+                toast.error('Internal error: ')                
+                setIsLoading(false)
+            }
+        })   
     }
 
     const reDirectToSettings = () =>{
        return nav('/settings') 
+    }
+
+    const handleFollow = () =>{
+        setIsLoading(true)
+        let url = `/interactions/followings/follow/${travelMateId}`
+        instance.get(url)
+        .then(response => response.data)
+        .then(data => {
+            getTravelMateData()
+            setIsFollowing(!isFollowing)
+            setIsLoading(false)
+        })
+        .catch(error => {
+            try {
+                toast.warning(error.response.data.detial)
+                setIsLoading(false)
+            } catch (error) {
+                toast.error('Internal error: ')                
+                setIsLoading(false)
+            }
+        })   
     }
 
 
@@ -82,7 +116,10 @@ const Profile = () => {
         <div className='tra shadow-sm rounded-md shadow-gray-500 max-w-[695px] mx-auto'>
             <div className='flex justify-end px-0 items-center'>
             {/* <button onClick={logout} className='p-1 text-lg font-semibold text-gray-600 rounded-md flex justify-center items-center'><FaSignOutAlt className='mx-2 animate-bounce0'/> Logout</button> */}
-            <button onClick={reDirectToSettings} className='px-2 py-2 text-lg font-semibold text-gray-600 rounded-md flex items-center'><FaCog className='mx-2 animate-spin0' size={20}/>Settings </button>
+            {
+                selfProfile &&
+                <button onClick={reDirectToSettings} className='px-2 py-2 text-lg font-semibold text-gray-600 rounded-md flex items-center'><FaCog className='mx-2 animate-spin0' size={20}/>Settings </button>
+            }
             </div>
             <div className='grid gap-3'>
                 <div className='flex justify-around items-center px-2'>
@@ -114,10 +151,15 @@ const Profile = () => {
 
             {
             !selfProfile ? 
+                isFollowing ?
+                    <div className='mt-3 flex items-center px-5 w-full'>
+                        <button onClick={handleFollow} className='w-full w-[50%]0 mx-2 p-1 text-lg font-semibold bg-gray-300 text-gray-600 rounded-md'>Unfollow</button>
+                    </div>
+                :
                 <div className='mt-3 flex items-center px-5 w-full'>
-                <button onClick={()=>setShowProfileEditModal(true)} className='w-full w-[50%]0 mx-2 p-1 text-lg font-semibold bg-sky-400 text-white rounded-md'>Follow</button>
-                {/* <button onClick={()=>setShowProfileEditModal(true)} className='w-[50%] mx-2 p-1 text-lg font-semibold bg-sky-400 text-white rounded-md'>Edit Profile</button> */}
-                </div>
+                        <button onClick={handleFollow} className='w-full w-[50%]0 mx-2 p-1 text-lg font-semibold bg-sky-400 text-white rounded-md'>Follow</button>
+                    </div>
+
             :
             <div className='mt-3 px-6 md:px-10'>
                 <button onClick={()=>setShowProfileEditModal(true)} className='w-full p-1 text-lg font-semibold bg-sky-400 text-white rounded-md flex justify-center items-center'><FaPen className='mx-2'/> Edit Profile</button>
@@ -136,12 +178,17 @@ const Profile = () => {
             <img src={explore} className='w-20'/>
             <p className='p-1 text-center text-yellow-0 text-sm'>"Discover our collection of visited places across different countries! From stunning beaches to breathtaking mountains, we've got it all. Explore our curated list and get inspired for your next adventure."</p>
             </div>
-            <button onClick={()=>nav('/explore')} className='border-2 p-3 m-1 float-right py-1 text-white font-semibold rounded-md bg-yellow-400 border-yellow-400'>Explore</button>
+            <button onClick={()=>nav('/explore')} className='border-2 p-3 m-1 float-right py-1 text-white font-semibold rounded-md bg-yellow-400 border-yellow-400 animate-pulse'>Explore</button>
             <br />
             <br />
             </div>
-            <h1 className='m-2 font-bold text-center text-xl text-sky-400'>My Trips</h1>    
-            <TripTabs/>
+            {
+                selfProfile ? 
+                <h1 className='m-2 font-bold text-center text-xl text-sky-400'>My Trips</h1>    
+                :
+                <h1 className='m-2 font-bold text-center text-xl text-sky-400'>Trips</h1>    
+            }
+            <TripTabs travelMateId = {travelMateId}/>
         </div>
 
         {showProfileEditModal && <ProfileEditModal

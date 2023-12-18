@@ -8,6 +8,7 @@ import useAuth from '../Auth/auth';
 
 const Signup = () => {
   const nav = useNavigate();
+  const [isLoading,setIsLoading] = useState(false)
   const {rootPath, checkTokenExpiration} = useAuth()
   const [phone,setPhone] = useState('')
   const [email,setEmail] = useState('')
@@ -15,26 +16,26 @@ const Signup = () => {
   const [contryCode,setContryCode] = useState('')
   const [password,setPassword] = useState('')
   const [cPassword,setCPassword] = useState('')
-
+  const [emailSent, setEmailSent] = useState(false)
 
 
   const handleRegister = (f) =>{
     f.preventDefault()
-    
     if (password !== cPassword){
       toast.warning('Confirm password is incorrect')
       return false
     }
+    setIsLoading(true)
     let url = 'travel-mates/register'
     let body = {
       phone,
       email,
       first_name: name,
-      last_name : name,
+      last_name : '',
       contry_code : contryCode,
-      password
+      password,
+      email_sent : emailSent
     }
-    console.log(body)
     instance.post(url, body)
     .then(response => response.data)
     .then(data => {
@@ -42,13 +43,18 @@ const Signup = () => {
         autoClose:2000,
         position:'top-center'
       })
+      setIsLoading(true)
       return nav('/login')
     })
     .catch(error => {
-      toast.warning(error.response.data.detail,{
-        position:'top-center',
-      })
-    })
+      try {
+          toast.warning(error.response.data.detial)
+          setIsLoading(false)
+      } catch (error) {
+          toast.error('Internal error: ')                
+          setIsLoading(false)
+      }
+  })  
   }
 
   
@@ -145,6 +151,10 @@ const Signup = () => {
               className="w-full p-2 border border-sky-400 rounded-md focus:outline-none focus:border-sky-600"
             />
           </div>
+          <div className='col-span-2 m-2'>
+            <input className='mx-2' type='checkbox' id='sent_email' onChange={(e) => setEmailSent(!emailSent)} value={emailSent} />
+            <label className='text-sm' htmlFor='sent_email'>Sent credentials to email</label>
+          </div>
           <div className="text-black text-[13px] m-2 mt-4">
             Don't have an account?{' '}
             <span
@@ -165,6 +175,9 @@ const Signup = () => {
           </div>
         </form>
       </div>
+      {
+        isLoading && <Loading/>
+    }
     </div>
   );
 };

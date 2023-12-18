@@ -11,11 +11,13 @@ const Signin = () => {
   const {rootPath, checkTokenExpiration} = useAuth()
   const [phone,setPhone] = useState('')
   const [password,setPassword] = useState('')
+  const [isLoading,setIsloading] = useState(false)
  
 
 
   const handlLogin = (f) =>{
     f.preventDefault()
+    setIsloading(true)
     let url = 'travel-mates/login'
     let body = {
         phone,
@@ -32,11 +34,23 @@ const Signin = () => {
             autoClose:1000
         })
         window.location.href = '/'
+        setIsloading(false)
         return 1 
     })
-    .catch(error => toast.warning(error.response.data.detail,{
-      position:'top-center',
-    }))
+    .catch(error => {
+      try {
+          toast.warning(error.response.data.detail,{
+           position:'top-center',
+         })
+         setIsloading(false)
+      } catch (error) {
+          toast.warning(error.response.data.detail,{
+           position:'top-center',
+         })
+         setIsloading(false)            
+      }
+  }
+  )
   }
 
   useEffect(() =>{
@@ -47,6 +61,7 @@ const Signin = () => {
 
   return (
     <div className="md:grid md:grid-cols-3 justify-around">
+        {isLoading && <Loading/>}
     <div className='md:col-span-2'>
       <div className="flex justify-center text-3xl md:text-4xl text-sky-400 font-semibold m-5 mb-2 mt-3 text-center md:mb-5 md:mt-64">
         <span>

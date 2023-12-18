@@ -3,7 +3,9 @@ import instance from '../../../app/api'
 import Trip from '../trips/Trips'
 import { useNavigate } from 'react-router-dom'
 
-const CompletedTrips = () => {
+const CompletedTrips = ({
+    travelMateId
+}) => {
     const nav = useNavigate()
     const [trips, setTrips] = useState([])
     const [currentTripId,setCurrentTripId] = useState('')
@@ -11,7 +13,7 @@ const CompletedTrips = () => {
     const [showCommentModal,setShowCommentModal] = useState(false)
 
     const getUpcomingTrips = () =>{
-        let url = '/trips?type=completed'
+        let url = `/trips?travel_mate_id=${travelMateId}&type=completed`
         instance.get(url)
         .then(response=>response.data)
         .then(data => {
@@ -38,8 +40,9 @@ const CompletedTrips = () => {
             />)
         }
         {
-            trips.length > 1 ?
-            <div className='mt-0'>
+            trips.length === 0 ?
+            <div className='mt-10 animate-pulse text-center text-lg text-gray-500'>
+                <h2>No Completed Trips</h2>
             </div>
             : ''
         }

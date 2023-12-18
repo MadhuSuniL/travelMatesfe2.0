@@ -15,6 +15,7 @@ body {
 .tra::-webkit-scrollbar {
   width: 3px;
   background-color: #f5f5f5;
+  scroll-behavior: smooth;
 }
 
 .tra::-webkit-scrollbar-thumb {

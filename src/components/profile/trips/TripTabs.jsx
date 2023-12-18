@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import UpComingTrips from './UpComingTrips';
 import CompletedTrips from './CompletedTrips';
 
-const TripTabs = () => {
+const TripTabs = ({
+    travelMateId
+}) => {
     const [activeTab, setActiveTab] = useState('upcoming'); // Initial active tab state
 
     const handleTabChange = (tab) => {
@@ -38,14 +40,14 @@ const TripTabs = () => {
             {activeTab === 'upcoming' && (
                 <div className="tra overflow-y-auto h-[600px]">
                     
-                    <UpComingTrips/>
+                    <UpComingTrips travelMateId = {travelMateId} />
                 </div>
             )}
 
             {activeTab === 'completed' && (
                 <div className="">
                     <div className="tra overflow-y-auto h-[600px]">
-                        <CompletedTrips/>
+                        <CompletedTrips travelMateId = {travelMateId}/>
                     </div>
                 </div>
             )}

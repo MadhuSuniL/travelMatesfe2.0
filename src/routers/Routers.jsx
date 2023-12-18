@@ -16,6 +16,7 @@ import ExploreDetail from '../pages/Explore/ExploreDetail';
 import Explore from '../pages/Explore/Explore';
 import Chat from '../pages/Chats/Chat';
 import Interactions from '../pages/Interactions/Interactions';
+import ForgotPassword from '../Authpage/ForgotPassword';
 
 const router = createBrowserRouter([
     {
@@ -76,10 +77,10 @@ const router = createBrowserRouter([
             path:'register',
             Component : Signup
           },
-          // {
-          //   path:'forgot-password',
-          //   Component : ForgotPassword
-          // }
+          {
+            path:'forgot-password',
+            Component : ForgotPassword
+          }
       ],
     },
 ])

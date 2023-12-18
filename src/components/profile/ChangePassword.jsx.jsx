@@ -6,17 +6,20 @@ import instance from '../../app/api';
 function ChangePasswordModal({
     showChangePasswordModal,
     setShowChangePasswordModal,
+    setIsLoading,
     logout
 }) {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+
     const handleSaveChanges = () => {
-      if (newPassword !== confirmPassword) {
-        toast.warning('New password and confirm password are not the same!')
-        return 0
-      }
+        if (newPassword !== confirmPassword) {
+            toast.warning('New password and confirm password are not the same!')
+            return 0
+        }
+        setIsLoading(true)
       let url = `/travel-mates/change-password`
       let body = {
         old_password: oldPassword,
@@ -26,9 +29,19 @@ function ChangePasswordModal({
       .then(response => response.data)
       .then(data => {
           toast.info('Password changed, Login again!')
+            setIsLoading(false)
           logout()
       }
       )
+      .catch(error => {
+        try {
+            toast.warning(error.response.data.detial)
+            setIsLoading(false)
+        } catch (error) {
+            toast.error('Internal error: ')                
+            setIsLoading(false)
+        }
+    })
     };
 
     return (

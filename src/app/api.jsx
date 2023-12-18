@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -7,17 +8,15 @@ const instance = axios.create({
   },
 });
 
-// Function to refresh the token
 const refreshToken = async () => {
-  // Implementing our token refresh logic here
-  try {
+   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}travel-mates/token-refresh`,
       {
         refresh: localStorage.getItem("refreshToken"),
       }
     );
-    const newAccessToken = response.data.accessToken;
+    const newAccessToken = response.data.access;
     return newAccessToken;
   } catch (error) {
     throw error;
@@ -30,18 +29,20 @@ instance.interceptors.response.use(
   async (error) => {
     if (error.response) {
       const { status } = error.response;
-      if (status === 402) {
+      if (status === 401) {
         try {
-          const newAccessToken = await refreshToken(); // Attempt to refresh the token
+          const newAccessToken = await refreshToken(); 
           if (newAccessToken) {
-            // Update the stored access token
             localStorage.setItem("accessToken", newAccessToken);
-            // Retry the original request with the new token
             error.config.headers.Authorization = `Bearer ${newAccessToken}`;
             return axios(error.config);
           }
+          else{
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("user");
+            window.location.href = '/login';
+          }
         } catch (refreshError) {
-          // Token refresh failed, handle the error or redirect to the login page
           localStorage.removeItem("accessToken");
           localStorage.removeItem("user");
           window.location.href = '/login';

@@ -3,10 +3,12 @@ import Header from '../../Header';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import ChangePasswordModal from '../../components/profile/ChangePassword.jsx';
+import Loading from '../../components/global/Loading'
 
 const Settings = () => {
     const nav = useNavigate();
     const [showChangePasswordModal,setShowChangePasswordModal] = useState(false) 
+    const [isLoading,setIsLoading] = useState(false)
 
 
 
@@ -17,6 +19,7 @@ const Settings = () => {
 
     return (
         <div>
+        {isLoading && <Loading/>}
             <div className="max-w-screen-md mx-auto px-4 md:px-0">
                 <h1
                     onClick={() => nav('/profile/self')}
@@ -58,7 +61,8 @@ const Settings = () => {
             </div>
             {showChangePasswordModal && <ChangePasswordModal
             showChangePasswordModal = {showChangePasswordModal}
-            setShowChangePasswordModal = {setShowChangePasswordModal}   
+            setShowChangePasswordModal = {setShowChangePasswordModal} 
+            setIsLoading = {setIsLoading}  
             logout = {logout} 
             />}
 

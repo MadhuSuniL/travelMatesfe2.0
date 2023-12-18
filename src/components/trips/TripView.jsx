@@ -13,7 +13,7 @@ import BackButton from '../global/BackButton'
 import { useNavigate } from 'react-router-dom'
 import UserComment from '../home/CommentComp'
 import {toast} from 'react-toastify'
-import { MdSend } from 'react-icons/md'; // Import the send icon from react-icons
+import { MdSend } from 'react-icons/md'; 
 
 
 
@@ -24,7 +24,9 @@ const TripView = () => {
 
     const [tripId, setTripId] = useState('')
     const [title, setTitle] = useState('')
+    const [travelerId, setTravelerId] = useState('')
     const [travlerName, setTravlerName] = useState('')
+    const [travelerProfile, setTravelerProfile] = useState('')
     const [from, setFrom] = useState('')
     const [to, setTo] = useState('')
     const [date, setDate] = useState('')
@@ -43,11 +45,16 @@ const TripView = () => {
     const [isFollowing, setIsFollowing] = useState(false)
     const [connectedCount, setConnectedCount] = useState(0)
 
+    const travel_mate_id = JSON.parse(localStorage.getItem('travel_mate')).travel_mate_id
+
+
 
   const updateSates = (tripData) =>{
     setTripId(tripData.trip_id)
     setTitle(tripData.title)
+    setTravelerId(tripData.travel_mate)
     setTravlerName(tripData.travel_mate_name)
+    setTravelerProfile(tripData.travel_mate_profile)
     setFrom(tripData.departure)
     setTo(tripData.destination)
     setDate(tripData.date)
@@ -73,18 +80,6 @@ const refreshTripData = () => {
   })  
 }
 
-const LikeAndDisLike = () =>{
-    let url = '/interactions/trips/likes/like'
-    let body = {
-      'trip': tripId
-    }
-    instance.post(url, body)
-    .then(response => response.data)
-    .then(data => {
-      refreshTripData()
-    })
-}
-
 const addComment = () =>{
   let url = 'interactions/trips/comments/comment'
   let body = {
@@ -95,7 +90,6 @@ const addComment = () =>{
   .then(response => response.data)
   .then(data => {
       refreshTripData()
-      toast.info('Comment added successfully')
       setComment('')
   })
 
@@ -112,6 +106,14 @@ const tripRequest = () =>{
     refreshTripData()
   })
 }
+
+const addFullUrlToImg = (url) => {
+  const baseUrl = process.env.REACT_APP_API_URL || "";
+  if (!url.includes("https://")) {
+    return baseUrl + url
+  }
+  return url
+};
 
 useEffect(()=>{
     refreshTripData()
@@ -134,7 +136,11 @@ useEffect(()=>{
                   </div>
                   <img src={''} className='w-10 rounded-full m-3 mb-0'/>
               </div>
-              <h1 className='m-3 mt-0 text-md  font-semibold text-left  flex'><span><img src={user} className='mr-1 mt-[13%] w-4'/></span>{travlerName}</h1> 
+              <div onClick={()=> nav(travel_mate_id !== travelerId ? `/profile/${travelerId}` : `/profile/self` )} className='flex cursor-pointer justify-between items-center'>
+                <h1 className='m-3 mt-0 text-md  font-semibold text-left  flex'><span><img src={user} className='mr-1 mt-[13%] w-4'/></span>{travlerName}</h1> 
+                <img src={addFullUrlToImg(travelerProfile)} className='w-10 mx-2 rounded-full'/>
+              </div>
+
               <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={connect} className='mr-1 mt-[13%] w-4'/></span>{connectedCount}/{strength}</h1>
               <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={usb} className='mr-1 mt-[13%] w-4'/></span> {category}</h1>
               <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={dis} className='mr-1 mt-[13%] w-4'/></span> {distance}</h1>
@@ -156,11 +162,17 @@ useEffect(()=>{
 
               </div>
               <br/>
-              <button className={isRequested ? 'bg-green-400 p-2 rounded-md w-full text-white text-sm font-bold' : 'bg-sky-400 p-2 rounded-md w-full text-white text-sm font-semibold'} onClick={()=>{
-                  // !isRequested ? setRequestsCount(requestsCount+1) : setRequestsCount(requestsCount-1)
-                  setIsRequested(!isRequested)
-                  tripRequest()
-              }} >{isRequested ? `Requested` : `Request trip`}</button>
+              {
+                travel_mate_id !== travelerId 
+                ?
+                <button className={isRequested ? 'bg-green-400 p-2 rounded-md w-full text-white text-sm font-bold' : 'bg-sky-400 p-2 rounded-md w-full text-white text-sm font-semibold'} onClick={()=>{
+                    // !isRequested ? setRequestsCount(requestsCount+1) : setRequestsCount(requestsCount-1)
+                    setIsRequested(!isRequested)
+                    tripRequest()
+                }}>{isRequested ? `Requested` : `Request trip`}</button>
+                :
+                <button onClick={()=> nav('/interactions', { state: "requests"})} className='bg-sky-400 p-2 rounded-md w-full text-white text-sm font-semibold'> Show Requets</button>
+              }
 
             </div>
               {/* {Comments } */}
