@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import connect from '../../../assests/link.png'
-import timer from '../../../assests/timer.png'
-import usb from '../../../assests/usb.png'
-import user from '../../../assests/user.png'
+import { FaLink, FaFolderOpen, FaHourglass, FaPaperPlane} from 'react-icons/fa';
 import ft from '../../../assests/ft.png'
 import Like from '../../trips/Like'
 import Comment from '../../trips/Comment'
 import Request from '../../trips/Request'
 import instance from '../../../app/api'
-import { toast } from 'react-toastify'
 
 const Trip = ({
   setShowCommentModal,
@@ -25,9 +21,9 @@ const Trip = ({
       const [to, setTo] = useState('')
       const [date, setDate] = useState('')
       const [category, setCategory] = useState('')
-      const [likeCount, setLikeCount] = useState(1000)
-      const [commentsCount, setCommentsCount] = useState(1000)
-      const [requestsCount, setRequestsCount] = useState(1000)
+      const [likeCount, setLikeCount] = useState()
+      const [commentsCount, setCommentsCount] = useState()
+      const [requestsCount, setRequestsCount] = useState()
       const [strength, setStrength] = useState(0)
       const [isLiked, setIsLiked] = useState(false)
       const [connectedCount, setConnectedCount] = useState(0)
@@ -83,11 +79,10 @@ const Trip = ({
             </div>
             <img src={''} className='w-10 rounded-full m-3 mb-0'/>
         </div>
-       <h1 className='m-3 mt-0 text-md  font-semibold text-left  flex'><span><img src={user} className='mr-1 mt-[13%] w-4'/></span>{travlerName}</h1> 
-        <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={connect} className='mr-1 mt-[13%] w-4'/></span>{connectedCount}/{strength}</h1>
-        <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={usb} className='mr-1 mt-[13%] w-4'/></span> {category}</h1>
-        <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={timer} className='mr-1 mt-[13%] w-4'/></span> {date}</h1>
-        {/* <br/> */}
+              <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaLink className='mr-2 text-sky-400' size={12}/> {connectedCount}/{strength}</h1>
+              <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaFolderOpen className='mr-2 text-sky-400' size={12}/>{category}</h1>
+              <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaHourglass className='mr-2 text-sky-400' size={12}/>{date}</h1>
+       {/* <br/> */}
         <div className='flex justify-around  mt-5'>
             <center>
             <h1 className='text-gray-500 font-bold'>From</h1>
@@ -113,7 +108,11 @@ const Trip = ({
             setCurrentTripName(title)
             setShowCommentModal(true)
           }} status={false} count={commentsCount} />
-          <Request status={'self'} count={requestsCount} />
+          <div className='flex flex-col items-center justify-center'>
+              <FaPaperPlane size={20} className="text-sky-400 cursor-pointer"/>
+              <h1 className={'text-gray-400 text-sm'}>Requests ({requestsCount})</h1>
+          </div>
+          {/* <Request status={'self'} count={requestsCount} /> */}
         </div>
 
     </div>

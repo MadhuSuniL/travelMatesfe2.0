@@ -14,8 +14,8 @@ function ViewProfileModal({
         >
             <div className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label className="block mb-2 font-medium">First Name</label>
+                    <div className='col-span-2'>
+                        <label className="block mb-2 font-medium">Nick Name</label>
                         <input
                             type="text"
                             value={travelMateData.first_name}
@@ -23,7 +23,7 @@ function ViewProfileModal({
                             className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                    <div>
+                    {/* <div>
                         <label className="block mb-2 font-medium">Last Name</label>
                         <input
                             type="text"
@@ -31,7 +31,7 @@ function ViewProfileModal({
                             readOnly
                             className="w-full p-2 border border-gray-300 rounded-md"
                         />
-                    </div>
+                    </div> */}
                 </div>
 
                 <label className="block mb-2 font-medium">Email</label>

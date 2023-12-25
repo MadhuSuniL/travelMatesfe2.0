@@ -1,18 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import { useParams } from 'react-router-dom'
-import connect from '../../assests/link.png'
-import dis from '../../assests/distance.png'
-import timer from '../../assests/timer.png'
-import usb from '../../assests/usb.png'
-import user from '../../assests/user.png'
+import { FaLink, FaFolderOpen, FaHourglass, FaMapMarker, FaMars, FaEnvelope} from 'react-icons/fa';
 import ft from '../../assests/ft.png'
-import Like from './Like'
 import instance from '../../app/api'
-import Header from '../../Header'
 import BackButton from '../global/BackButton'
 import { useNavigate } from 'react-router-dom'
 import UserComment from '../home/CommentComp'
-import {toast} from 'react-toastify'
 import { MdSend } from 'react-icons/md'; 
 
 
@@ -57,9 +50,10 @@ const TripView = () => {
     setTravelerProfile(tripData.travel_mate_profile)
     setFrom(tripData.departure)
     setTo(tripData.destination)
-    setDate(tripData.date)
+    setDate(tripData.trip_date)
     setCategory(tripData.category)
     setDistance(tripData.distance)
+    setStrength(tripData.strength)
     setDescription(tripData.description)
     setLikeCount(tripData.likes.length)
     setIsLiked(tripData.is_liked)
@@ -130,21 +124,20 @@ useEffect(()=>{
               <div onClick={()=> nav('/trips')} className='pl-3'>
               <BackButton/>
               </div>
-              <div className='flex justify-between'>
-                  <div>
-                      <h1 className='m-3 text-xl md:text-3xl text-left text-sky-400 font-semibold'>{title}</h1> 
+                  <div className='flex cursor-pointer justify-between items-center'>
+                  <div className=''>
+                      <h1 title='open' className='cursor-pointer m-3 text-xl text-left font-semibold'>{title}</h1> 
+                      <h1 className='m-3 mt-0 mb-0 text-[12px]  font-semibold text-left text-yellow-400'>@{travlerName}</h1> 
                   </div>
-                  <img src={''} className='w-10 rounded-full m-3 mb-0'/>
+                  <img onClick={()=> nav(`/profile/${travelerId}`)}  src={addFullUrlToImg(travelerProfile)} className='w-14 mx-2 rounded-full'/>
               </div>
-              <div onClick={()=> nav(travel_mate_id !== travelerId ? `/profile/${travelerId}` : `/profile/self` )} className='flex cursor-pointer justify-between items-center'>
-                <h1 className='m-3 mt-0 text-md  font-semibold text-left  flex'><span><img src={user} className='mr-1 mt-[13%] w-4'/></span>{travlerName}</h1> 
-                <img src={addFullUrlToImg(travelerProfile)} className='w-10 mx-2 rounded-full'/>
-              </div>
+        
+              <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaLink className='mr-2 text-sky-400' size={12}/> {connectedCount}/{strength}</h1>
+              <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaFolderOpen className='mr-2 text-sky-400' size={12}/>{category}</h1>
+              <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaHourglass className='mr-2 text-sky-400' size={12}/>{date}</h1>
+              <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaMapMarker className='mr-2 text-sky-400' size={12}/>{distance} KM</h1>
+              <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaMars className='mr-2 text-sky-400' size={12}/>{'Only Male'}</h1>
 
-              <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={connect} className='mr-1 mt-[13%] w-4'/></span>{connectedCount}/{strength}</h1>
-              <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={usb} className='mr-1 mt-[13%] w-4'/></span> {category}</h1>
-              <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={dis} className='mr-1 mt-[13%] w-4'/></span> {distance}</h1>
-              <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={timer} className='mr-1 mt-[13%] w-4'/></span> {'10 days to go'}</h1>
               <h1 className='m-3 text-md mt-5 text-gray-500 font-bold'>Description</h1>
               <p className='m-3 text-md text-gray-500'>
               {description}
@@ -169,7 +162,9 @@ useEffect(()=>{
                     // !isRequested ? setRequestsCount(requestsCount+1) : setRequestsCount(requestsCount-1)
                     setIsRequested(!isRequested)
                     tripRequest()
-                }}>{isRequested ? `Requested` : `Request trip`}</button>
+                }}>
+                  {isRequested ? `Requested` : `Request trip`}
+                  </button>
                 :
                 <button onClick={()=> nav('/interactions', { state: "requests"})} className='bg-sky-400 p-2 rounded-md w-full text-white text-sm font-semibold'> Show Requets</button>
               }
