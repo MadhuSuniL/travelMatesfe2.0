@@ -167,8 +167,8 @@ function ProfileEditModal({
         {isLoading && <Loading/>}
             <div className="p-4 pt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                    <div>
-                        <label className="block mb-2 font-medium">First Name</label>
+                    <div className='col-span-2'>
+                        <label className="block mb-2 font-medium">Nick Name</label>
                         <input
                             type="text"
                             value={firstName}
@@ -176,7 +176,7 @@ function ProfileEditModal({
                             className="w-full p-2 border border-gray-300 rounded-md focus:ring-sky-300"
                         />
                     </div>
-                    <div>
+                    {/* <div>
                         <label className="block mb-2 font-medium">Last Name</label>
                         <input
                             type="text"
@@ -184,7 +184,7 @@ function ProfileEditModal({
                             onChange={(e) => setLastName(e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded-md focus:ring-sky-300"
                         />
-                    </div>
+                    </div> */}
                 </div>
 
                 <label className="block mb-2 font-medium">Email</label>

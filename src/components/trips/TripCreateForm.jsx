@@ -76,15 +76,13 @@ const TripCreationForm = () => {
         .then(response => response.data)
         .then(data => {
             toast.success('Trip added successfully',{autoClose:1500})
-            setTimeout(()=>{
-                window.location.href = '/profile/self'
-            },2000)
+            nav('/profile/self', {state : 'upcoming'})
         })
     };
 
     return (
         <div className="max-w-screen-md mx-auto shadow-gray-500 rounded-md shadow-sm p-2 md:p-5">
-            <p className='text-lg text-center animate-pulse text-gray-600 m-2'>"Plan & Share: Your Next Adventure Awaits!"</p>
+            <p className='text-xl text-center animate-pulse text-gray-600 m-2'>Pulish Trip</p>
             <p className='text-[12px] text-yellow-400 m-2'>Welcome! Let's plan your next adventure. Fill in the details below to create your personalized trip. Your journey begins here!</p>
             <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
                 <div className="mb-1">
@@ -138,7 +136,7 @@ const TripCreationForm = () => {
                     >
                         <option value="">Select a category</option>
                         {categories.map((category) => (
-                            <option key={category.value} value={category.value}>
+                            <option key={category.value} value={category.label}>
                                 {category.label}
                             </option>
                         ))}

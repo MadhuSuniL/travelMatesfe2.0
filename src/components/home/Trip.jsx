@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import logo from '../../assests/g.png'
-import connect from '../../assests/link.png'
-import timer from '../../assests/timer.png'
-import usb from '../../assests/usb.png'
-import user from '../../assests/user.png'
 import ft from '../../assests/ft.png'
 import Like from '../trips/Like'
-import Follow from '../trips/Follow'
+import { FaLink, FaFolderOpen, FaHourglass} from 'react-icons/fa';
 import Comment from '../trips/Comment'
 import Request from '../trips/Request'
 import instance from '../../app/api'
@@ -50,6 +45,7 @@ const Trip = ({
       setTo(tripData.destination)
       setDate(tripData.trip_date)
       setCategory(tripData.category)
+      setStrength(tripData.strength)
       setLikeCount(tripData.likes.length)
       setIsLiked(tripData.is_liked)
       setCommentsCount(tripData.comments.length)
@@ -108,19 +104,17 @@ const Trip = ({
 
   return (
     <div className='shadow-sm m-1 p-1 md:p-3 ease-in-out duration-700 shadow-gray-500 rounded-md'>
-        <div className='flex justify-between'>
-            <div>
-       <h1 onClick={onClick} title='open' className='cursor-pointer hover:scale-105 hover:text-yellow-400 m-3 text-lg text-left text-sky-400 font-semibold'>{title}</h1> 
-            </div>
-            <img src={''} className='w-10 rounded-full m-3 mb-0'/>
+        <div className='flex cursor-pointer justify-between items-center'>
+          <div className=''>
+              <h1 onClick={onClick} title='open' className='cursor-pointer hover:text-sky-400 hover:scale-105 m-3 text-xl text-left font-semibold'>{title}</h1> 
+              <h1 className='m-3 mt-0 mb-0 text-[12px]  font-semibold text-left text-yellow-400 flex'>@{travlerName}</h1> 
+          </div>
+          <img onClick={()=> nav(`/profile/${travelerId}`)}  src={addFullUrlToImg(travelerProfile)} className='w-14 mx-2 rounded-full'/>
         </div>
-        <div onClick={()=> nav(`/profile/${travelerId}`)} className='flex cursor-pointer justify-between items-center'>
-            <h1 className='m-3 mt-0 text-md  font-semibold text-left  flex'><span><img src={user} className='mr-1 mt-[13%] w-4'/></span>{travlerName}</h1> 
-            <img src={addFullUrlToImg(travelerProfile)} className='w-10 mx-2 rounded-full'/>
-        </div>
-        <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={connect} className='mr-1 mt-[13%] w-4'/></span>{connectedCount}/{strength}</h1>
-        <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={usb} className='mr-1 mt-[13%] w-4'/></span> {category}</h1>
-        <h1 className='m-3 text-sm  font-semibold text-left flex '><span><img src={timer} className='mr-1 mt-[13%] w-4'/></span> {date}</h1>
+
+        <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaLink className='mr-2 text-sky-400' size={12}/> {connectedCount}/{strength}</h1>
+        <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaFolderOpen className='mr-2 text-sky-400' size={12}/>{category}</h1>
+        <h1 className='m-3 text-sm  font-semibold text-left flex items-center'><FaHourglass className='mr-2 text-sky-400' size={12}/>{date}</h1>
         {/* <br/> */}
         <div className='flex justify-around  mt-5'>
             <center>
@@ -136,7 +130,7 @@ const Trip = ({
         </div>
         <br/>
                {/* {interations} */}
-        <div className='p-2 flex justify-around items-center'>
+        <div className='p-2 px-5 flex justify-around items-center'>
           <Like onClick={()=>{
             !isLiked ? setLikeCount(likeCount+1) : setLikeCount(likeCount-1)
             setIsLiked(!isLiked)
@@ -147,7 +141,7 @@ const Trip = ({
             setCurrentTripName(title)
             setShowCommentModal(true)
           }} status={false} count={commentsCount} />
-          <Follow onClick={()=>{''}} status={isFollowing} count={commentsCount} />
+          {/* <Follow onClick={()=>{''}} status={isFollowing} count={commentsCount} /> */}
           <Request onClick={()=>{
             !isRequested ? setRequestsCount(requestsCount+1) : setRequestsCount(requestsCount-1)
             setIsRequested(!isRequested)

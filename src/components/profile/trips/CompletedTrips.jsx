@@ -24,7 +24,7 @@ const CompletedTrips = ({
 
     useEffect(()=>{
         getUpcomingTrips()
-    },[])
+    },[travelMateId])
 
   return (
     <div>

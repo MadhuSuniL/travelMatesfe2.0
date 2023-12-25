@@ -17,9 +17,8 @@ import {toast} from 'react-toastify'
 
 const Profile = () => {
     const nav = useNavigate()
+    const location = useLocation()
     const {travel_mate_id} = useParams()
-    const location = useLocation();
-    const navData  = location.state;
     const [showProfileViewModal,setShowProfileViewModal] = useState(false) 
     const [showProfileEditModal,setShowProfileEditModal] = useState(false) 
     const [showChangeProfilePicModal,setShowChangeProfilePicModal] = useState(false) 
@@ -40,6 +39,12 @@ const Profile = () => {
     const [trips, setTrips] = useState(0)
     const [followers, setFollowers] = useState(0)
     const [followings, setFollowings] = useState(0)
+
+    useEffect(()=>{
+        if (location.state){
+            document.getElementById(location.state).scrollIntoView()
+        }
+    },[])
 
     const getTravelMateData = ()=>{
         setIsLoading(true)
@@ -188,7 +193,9 @@ const Profile = () => {
                 :
                 <h1 className='m-2 font-bold text-center text-xl text-sky-400'>Trips</h1>    
             }
-            <TripTabs travelMateId = {travelMateId}/>
+            <div id='upcoming'>
+                <TripTabs travelMateId = {travelMateId}/>
+            </div>
         </div>
 
         {showProfileEditModal && <ProfileEditModal
