@@ -46,7 +46,8 @@ const Chat = () => {
       {isLoading && <Loading/>}
       <div className={selectedConversation ? 'md:w-[30%] hidden md:block md:border-2 shadow-lg shadow-gray-300 rounded-lg py-2' : 'md:w-[30%] md:border-2 shadow-lg shadow-gray-300 rounded-lg py-2'}>
         <div className='relative w-[97.4%]'>
-            <h2 className="text-lg bg-white absolute w-full h-9 mx-2 font-semibold text-gray-600 flex justify-between items-center px-3">Chats ({conversations.length}) <FaPlusSquare onClick={()=> setShowGroupCreateModal(true)} size={20} className='mr-5 mt-1 cursor-pointer text-sky-400'/></h2>
+            <h2 className="text-lg bg-white absolute w-full h-9 mx-2 font-semibold text-gray-600 flex justify-between items-center px-3">Chats ({conversations.length})</h2>
+{/*           <FaPlusSquare onClick={()=> setShowGroupCreateModal(true)} size={20} className='mr-5 mt-1 cursor-pointer text-sky-400'/> */}
         </div>
         <div className='h-full tra overflow-y-auto'>
           <Conversations conversations={conversations} onSelectConversation={handleSelectConversation} />
